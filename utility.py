@@ -51,8 +51,6 @@ def call_openai_for_review(file_content):
 def review_code(repo_path, extra_files=None):
     files_to_review = []
     review_results = []
-    comments = []
-    suggestions = []
 
     color_map = {
         '+': Fore.GREEN,
@@ -92,24 +90,7 @@ def review_code(repo_path, extra_files=None):
 
             print(color + ' ' + line)
 
-            if 'Comment#' in line:
-                comments.append(line)
-            if 'Suggestion#' in line:
-                suggestions.append(line)
-
-        review_results.append({
-            "repo_path": repo_path,
-            "file_path": file_path,
-            "code": file_diff,
-            "language": os.path.splitext(file_path)[1][1:],
-            "comments": comments,
-            "suggestions": suggestions
-        })
-
     if extra_files:
-        comments = []
-        suggestions = []
-
         for file in extra_files:
             file_path = os.path.join(repo_path, file)
             with open(file_path, 'r') as f:
@@ -126,19 +107,5 @@ def review_code(repo_path, extra_files=None):
                         break
 
                 print(color + ' ' + line)
-
-                if 'Comment#' in line:
-                    comments.append(line)
-                if 'Suggestion#' in line:
-                    suggestions.append(line)
-
-            review_results.append({
-                "repo_path": repo_path,
-                "file_path": file_path,
-                "code": file_content,
-                "language": os.path.splitext(file_path)[1][1:],
-                "comments": comments,
-                "suggestions": suggestions
-            })
 
     return review_results
